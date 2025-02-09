@@ -98,7 +98,6 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
     const { dx, dy } = deltas[direction];
     const newX = position.x + dx;
     const newY = position.y + dy;
-
     if (!isInBounds(newX, newY)) {
       setMoveText(OUT_OF_BOUNDS_TEXT);
       scheduleTimeout(() => setMoveText(MOVE_TEXT), moveTimeoutRef);
