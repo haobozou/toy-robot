@@ -27,6 +27,13 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
   const moveTimeoutRef = useRef(null);
   const reportTimeoutRef = useRef(null);
 
+  const scheduleTimeout = (callback, ref) => {
+    ref.current = setTimeout(() => {
+      callback();
+      ref.current = null;
+    }, TIMEOUT_DURATION);
+  };
+
   const clearAllTimeouts = () => {
     if (placeTimeoutRef.current) {
       clearTimeout(placeTimeoutRef.current);
@@ -54,20 +61,14 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
 
     if (xInput === "" || yInput === "" || directionInput === "") {
       setPlaceText(PLEASE_FILL_ALL_FIELDS_TEXT);
-      placeTimeoutRef.current = setTimeout(() => {
-        setPlaceText(PLACE_TEXT);
-        placeTimeoutRef.current = null;
-      }, TIMEOUT_DURATION);
+      scheduleTimeout(() => setPlaceText(PLACE_TEXT), placeTimeoutRef);
       return;
     }
 
     const integerRegex = /^\d+$/;
     if (!integerRegex.test(xInput) || !integerRegex.test(yInput)) {
       setPlaceText(INVALID_POSITION_TEXT);
-      placeTimeoutRef.current = setTimeout(() => {
-        setPlaceText(PLACE_TEXT);
-        placeTimeoutRef.current = null;
-      }, TIMEOUT_DURATION);
+      scheduleTimeout(() => setPlaceText(PLACE_TEXT), placeTimeoutRef);
       return;
     }
 
@@ -76,10 +77,7 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
     const newDirection = parseInt(directionInput);
     if (!isInBounds(newX, newY)) {
       setPlaceText(INVALID_POSITION_TEXT);
-      placeTimeoutRef.current = setTimeout(() => {
-        setPlaceText(PLACE_TEXT);
-        placeTimeoutRef.current = null;
-      }, TIMEOUT_DURATION);
+      scheduleTimeout(() => setPlaceText(PLACE_TEXT), placeTimeoutRef);
       return;
     }
 
@@ -103,10 +101,7 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
 
     if (!isInBounds(newX, newY)) {
       setMoveText(OUT_OF_BOUNDS_TEXT);
-      moveTimeoutRef.current = setTimeout(() => {
-        setMoveText(MOVE_TEXT);
-        moveTimeoutRef.current = null;
-      }, TIMEOUT_DURATION);
+      scheduleTimeout(() => setMoveText(MOVE_TEXT), moveTimeoutRef);
       return;
     }
 
@@ -138,10 +133,7 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
     setReportText(
       `X: ${position.x}, Y: ${position.y}, Direction: ${directionNames[direction]}`
     );
-    reportTimeoutRef.current = setTimeout(() => {
-      setReportText(REPORT_TEXT);
-      reportTimeoutRef.current = null;
-    }, TIMEOUT_DURATION);
+    scheduleTimeout(() => setReportText(REPORT_TEXT), reportTimeoutRef);
   };
 
   return (
