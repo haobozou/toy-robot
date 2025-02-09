@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Button from "./components/Button";
 
 const TIMEOUT_DURATION = 600;
@@ -23,15 +23,40 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
   const [moveText, setMoveText] = useState(MOVE_TEXT);
   const [reportText, setReportText] = useState(REPORT_TEXT);
 
+  const placeTimeoutRef = useRef(null);
+  const moveTimeoutRef = useRef(null);
+  const reportTimeoutRef = useRef(null);
+
+  const clearAllTimeouts = () => {
+    if (placeTimeoutRef.current) {
+      clearTimeout(placeTimeoutRef.current);
+      setPlaceText(PLACE_TEXT);
+      placeTimeoutRef.current = null;
+    }
+    if (moveTimeoutRef.current) {
+      clearTimeout(moveTimeoutRef.current);
+      setMoveText(MOVE_TEXT);
+      moveTimeoutRef.current = null;
+    }
+    if (reportTimeoutRef.current) {
+      clearTimeout(reportTimeoutRef.current);
+      setReportText(REPORT_TEXT);
+      reportTimeoutRef.current = null;
+    }
+  };
+
   const isInBounds = (x, y) => {
     return x >= 0 && x < 5 && y >= 0 && y < 5;
   };
 
   const place = () => {
+    clearAllTimeouts();
+
     if (xInput === "" || yInput === "" || directionInput === "") {
       setPlaceText(PLEASE_FILL_ALL_FIELDS_TEXT);
-      setTimeout(() => {
+      placeTimeoutRef.current = setTimeout(() => {
         setPlaceText(PLACE_TEXT);
+        placeTimeoutRef.current = null;
       }, TIMEOUT_DURATION);
       return;
     }
@@ -39,8 +64,9 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
     const integerRegex = /^\d+$/;
     if (!integerRegex.test(xInput) || !integerRegex.test(yInput)) {
       setPlaceText(INVALID_POSITION_TEXT);
-      setTimeout(() => {
+      placeTimeoutRef.current = setTimeout(() => {
         setPlaceText(PLACE_TEXT);
+        placeTimeoutRef.current = null;
       }, TIMEOUT_DURATION);
       return;
     }
@@ -50,8 +76,9 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
     const newDirection = parseInt(directionInput);
     if (!isInBounds(newX, newY)) {
       setPlaceText(INVALID_POSITION_TEXT);
-      setTimeout(() => {
+      placeTimeoutRef.current = setTimeout(() => {
         setPlaceText(PLACE_TEXT);
+        placeTimeoutRef.current = null;
       }, TIMEOUT_DURATION);
       return;
     }
@@ -61,6 +88,8 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
   };
 
   const move = () => {
+    clearAllTimeouts();
+
     const deltas = {
       0: { dx: 0, dy: -1 },
       90: { dx: 1, dy: 0 },
@@ -74,8 +103,9 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
       const newY = prev.y + dy;
       if (!isInBounds(newX, newY)) {
         setMoveText(OUT_OF_BOUNDS_TEXT);
-        setTimeout(() => {
+        moveTimeoutRef.current = setTimeout(() => {
           setMoveText(MOVE_TEXT);
+          moveTimeoutRef.current = null;
         }, TIMEOUT_DURATION);
         return prev;
       }
@@ -85,14 +115,20 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
   };
 
   const rotateLeft = () => {
+    clearAllTimeouts();
+
     setDirection((prev) => (prev + 270) % 360);
   };
 
   const rotateRight = () => {
+    clearAllTimeouts();
+
     setDirection((prev) => (prev + 90) % 360);
   };
 
   const report = () => {
+    clearAllTimeouts();
+
     const directionNames = {
       0: NORTH_TEXT,
       90: EAST_TEXT,
@@ -103,8 +139,9 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
     setReportText(
       `X: ${position.x}, Y: ${position.y}, Direction: ${directionNames[direction]}`
     );
-    setTimeout(() => {
+    reportTimeoutRef.current = setTimeout(() => {
       setReportText(REPORT_TEXT);
+      reportTimeoutRef.current = null;
     }, TIMEOUT_DURATION);
   };
 
