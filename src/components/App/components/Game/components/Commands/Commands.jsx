@@ -97,21 +97,20 @@ const Commands = ({ position, setPosition, direction, setDirection }) => {
       270: { dx: -1, dy: 0 },
     };
 
-    setPosition((prev) => {
-      const { dx, dy } = deltas[direction];
-      const newX = prev.x + dx;
-      const newY = prev.y + dy;
-      if (!isInBounds(newX, newY)) {
-        setMoveText(OUT_OF_BOUNDS_TEXT);
-        moveTimeoutRef.current = setTimeout(() => {
-          setMoveText(MOVE_TEXT);
-          moveTimeoutRef.current = null;
-        }, TIMEOUT_DURATION);
-        return prev;
-      }
+    const { dx, dy } = deltas[direction];
+    const newX = position.x + dx;
+    const newY = position.y + dy;
 
-      return { x: newX, y: newY };
-    });
+    if (!isInBounds(newX, newY)) {
+      setMoveText(OUT_OF_BOUNDS_TEXT);
+      moveTimeoutRef.current = setTimeout(() => {
+        setMoveText(MOVE_TEXT);
+        moveTimeoutRef.current = null;
+      }, TIMEOUT_DURATION);
+      return;
+    }
+
+    setPosition({ x: newX, y: newY });
   };
 
   const rotateLeft = () => {

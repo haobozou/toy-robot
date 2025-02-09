@@ -21,7 +21,3 @@
 
 4. **Access the Application:**<br>
    Follow the link displayed in the terminal
-
-## Known Issues
-
-- Sometimes certain hint texts can be displayed unexpectedly
