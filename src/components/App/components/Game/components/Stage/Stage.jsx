@@ -1,13 +1,13 @@
-import ObjectPlacement from "./components/ObjectPlacement";
+import Placement from "./components/Placement";
 import Robot from "./components/Robot";
 import Board from "./components/Board";
 
 const Stage = ({ position, direction }) => {
   return (
     <div className="relative">
-      <ObjectPlacement position={position} direction={direction}>
+      <Placement position={position} direction={direction}>
         <Robot />
-      </ObjectPlacement>
+      </Placement>
       <div className="absolute">
         <Board />
       </div>

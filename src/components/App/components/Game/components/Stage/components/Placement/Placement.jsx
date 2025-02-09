@@ -1,4 +1,4 @@
-const ObjectControl = ({ position, direction, children }) => {
+const Placement = ({ position, direction, children }) => {
   return (
     <div
       className="relative h-[60px] w-[60px]"
@@ -13,4 +13,4 @@ const ObjectControl = ({ position, direction, children }) => {
   );
 };
 
-export default ObjectControl;
+export default Placement;
